@@ -29,7 +29,7 @@ export function isValidExternalLoad(
       );
     }
 
-    case "machine":
+    case "selectable-load":
       return totalExternalLoad % equipment.totalLoadIncrement === 0;
 
     case "bodyweight":

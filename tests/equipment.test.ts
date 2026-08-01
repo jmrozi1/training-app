@@ -51,4 +51,18 @@ describe("equipment helpers", () => {
     expect(isValidExternalLoad(equipment, 0)).toBe(true);
     expect(isValidExternalLoad(equipment, 10)).toBe(false);
   });
+
+  it("supports configurable cable load increments", () => {
+    const equipment =
+      mockProgram.exerciseDefinitions["cable-row"]?.equipment;
+
+    expect(equipment).toMatchObject({
+      type: "selectable-load",
+      kind: "cable",
+    });
+    if (!equipment) return;
+
+    expect(isValidExternalLoad(equipment, 120)).toBe(true);
+    expect(isValidExternalLoad(equipment, 125)).toBe(false);
+  });
 });

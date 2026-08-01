@@ -26,8 +26,9 @@ export type DumbbellEquipment = {
   displayWeight: "total-and-per-unit";
 };
 
-export type MachineEquipment = {
-  type: "machine";
+export type SelectableLoadEquipment = {
+  type: "selectable-load";
+  kind: "cable" | "plate-loaded" | "machine";
   totalLoadIncrement: number;
 };
 
@@ -40,14 +41,14 @@ export type WeightedBodyMovementEquipment = {
   externalEquipment:
     | BarbellEquipment
     | DumbbellEquipment
-    | MachineEquipment;
+    | SelectableLoadEquipment;
   bodyweightContributionFactor: number;
 };
 
 export type EquipmentConfig =
   | BarbellEquipment
   | DumbbellEquipment
-  | MachineEquipment
+  | SelectableLoadEquipment
   | BodyweightEquipment
   | WeightedBodyMovementEquipment;
 
@@ -104,10 +105,17 @@ export type TrainingBlock = {
   weeks: TrainingWeek[];
 };
 
+export type BodyweightEntry = {
+  id: Id;
+  measuredAt: string;
+  weight: number;
+};
+
 export type Program = {
   id: Id;
   name: string;
   exerciseDefinitions: Record<Id, ExerciseDefinition>;
+  bodyweightHistory: BodyweightEntry[];
   blocks: TrainingBlock[];
 };
 
@@ -118,6 +126,11 @@ export type CompletedSetResult = {
   completedAt: string;
   updatedAt?: string;
   note?: string;
+  /**
+   * Snapshot used for body-moving exercise calculations at logging time.
+   * Historical results must not change when bodyweight history is edited.
+   */
+  bodyweight?: number;
 };
 
 export type SkippedSetResult = {
@@ -125,10 +138,15 @@ export type SkippedSetResult = {
   completedAt: string;
   updatedAt?: string;
   note?: string;
+  bodyweight?: number;
 };
 
 export type SetResult = CompletedSetResult | SkippedSetResult;
 
+/**
+ * Mock/in-memory lookup keyed by globally unique prescribed set IDs.
+ * A production persistence model may use workout-instance/result IDs instead.
+ */
 export type SetResultsBySetId = Record<Id, SetResult>;
 
 export type WorkoutLocation = {

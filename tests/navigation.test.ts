@@ -27,6 +27,7 @@ describe("workout navigation", () => {
     expect(resolved?.result).toMatchObject({
       status: "completed",
       actualReps: 4,
+      bodyweight: 185,
     });
   });
 
@@ -50,9 +51,12 @@ describe("workout navigation", () => {
 
   it("navigates across a day boundary", () => {
     const locations = enumerateWorkoutLocations(mockProgram);
-    const lastUpperSet = [...locations]
-      .reverse()
-      .find((location) => location.weekIndex === 0 && location.dayIndex === 0);
+    const lastUpperSet = [...locations].reverse().find(
+      (location) =>
+        location.blockIndex === 0 &&
+        location.weekIndex === 0 &&
+        location.dayIndex === 0,
+    );
 
     expect(lastUpperSet).toBeDefined();
     if (!lastUpperSet) return;
@@ -61,6 +65,43 @@ describe("workout navigation", () => {
       blockIndex: 0,
       weekIndex: 0,
       dayIndex: 1,
+      exerciseIndex: 0,
+      setIndex: 0,
+    });
+  });
+
+  it("navigates across a week boundary", () => {
+    const locations = enumerateWorkoutLocations(mockProgram);
+    const finalSetOfWeekOne = [...locations].reverse().find(
+      (location) =>
+        location.blockIndex === 0 && location.weekIndex === 0,
+    );
+
+    expect(finalSetOfWeekOne).toBeDefined();
+    if (!finalSetOfWeekOne) return;
+
+    expect(getNextWorkoutLocation(mockProgram, finalSetOfWeekOne)).toEqual({
+      blockIndex: 0,
+      weekIndex: 1,
+      dayIndex: 0,
+      exerciseIndex: 0,
+      setIndex: 0,
+    });
+  });
+
+  it("navigates across a block boundary", () => {
+    const locations = enumerateWorkoutLocations(mockProgram);
+    const finalSetOfBlockOne = [...locations].reverse().find(
+      (location) => location.blockIndex === 0,
+    );
+
+    expect(finalSetOfBlockOne).toBeDefined();
+    if (!finalSetOfBlockOne) return;
+
+    expect(getNextWorkoutLocation(mockProgram, finalSetOfBlockOne)).toEqual({
+      blockIndex: 1,
+      weekIndex: 0,
+      dayIndex: 0,
       exerciseIndex: 0,
       setIndex: 0,
     });

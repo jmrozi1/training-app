@@ -4,6 +4,7 @@ import type {
   Program,
   ProgramSet,
   SetResultsBySetId,
+  TrainingBlock,
   TrainingWeek,
   WorkoutDay,
 } from "../domain/types";
@@ -63,7 +64,8 @@ const exercises: ExerciseDefinition[] = [
     primaryMuscleGroup: "back",
     secondaryMuscleGroups: ["biceps"],
     equipment: {
-      type: "machine",
+      type: "selectable-load",
+      kind: "cable",
       totalLoadIncrement: 10,
     },
   },
@@ -74,6 +76,7 @@ const exerciseDefinitions = Object.fromEntries(
 );
 
 function makeSet(
+  block: number,
   week: number,
   day: number,
   placement: string,
@@ -83,7 +86,7 @@ function makeSet(
   expectedRir?: number,
 ): ProgramSet {
   return {
-    id: `w${week}-d${day}-${placement}-s${setNumber}`,
+    id: `b${block}-w${week}-d${day}-${placement}-s${setNumber}`,
     setNumber,
     prescription: {
       targetWeight,
@@ -94,6 +97,7 @@ function makeSet(
 }
 
 function makePlacement(
+  block: number,
   week: number,
   day: number,
   id: string,
@@ -104,31 +108,48 @@ function makePlacement(
   expectedRir: number,
 ): ExercisePlacement {
   return {
-    id: `w${week}-d${day}-${id}`,
+    id: `b${block}-w${week}-d${day}-${id}`,
     exerciseId,
     order,
     sets: [
-      makeSet(week, day, id, 1, weight, reps, expectedRir),
-      makeSet(week, day, id, 2, weight, Math.max(1, reps - 1), expectedRir),
+      makeSet(block, week, day, id, 1, weight, reps, expectedRir),
+      makeSet(
+        block,
+        week,
+        day,
+        id,
+        2,
+        weight,
+        Math.max(1, reps - 1),
+        expectedRir,
+      ),
     ],
   };
 }
 
-function makeWeek(number: 1 | 2 | 3 | 4 | 5): TrainingWeek {
-  const benchReps = number === 5 ? 6 : 4 + (number - 1);
+function makeWeek(
+  block: number,
+  number: 1 | 2 | 3 | 4 | 5,
+  baselineRepIncrease: number,
+): TrainingWeek {
+  const benchReps =
+    number === 5 ? 6 : 4 + baselineRepIncrease + (number - 1);
   const benchWeight = number === 5 ? 175 : 205;
-  const flyReps = number === 5 ? 6 : 8;
+  const flyReps = number === 5 ? 6 : 8 + baselineRepIncrease;
   const flyWeight = number === 5 ? 100 : 120;
   const squatWeight = number === 5 ? 235 : 300;
-  const squatReps = number === 5 ? 6 : 5 + (number - 1);
-  const pullupReps = number === 5 ? 6 : 10 + (number - 1);
+  const squatReps =
+    number === 5 ? 6 : 5 + baselineRepIncrease + (number - 1);
+  const pullupReps =
+    number === 5 ? 6 : 10 + baselineRepIncrease + (number - 1);
 
   const day1: WorkoutDay = {
-    id: `w${number}-day-1`,
+    id: `b${block}-w${number}-day-1`,
     name: "Upper A",
     order: 1,
     exercises: [
       makePlacement(
+        block,
         number,
         1,
         "bench",
@@ -139,6 +160,7 @@ function makeWeek(number: 1 | 2 | 3 | 4 | 5): TrainingWeek {
         number === 4 ? 0 : 4 - number,
       ),
       makePlacement(
+        block,
         number,
         1,
         "fly",
@@ -149,6 +171,7 @@ function makeWeek(number: 1 | 2 | 3 | 4 | 5): TrainingWeek {
         1,
       ),
       makePlacement(
+        block,
         number,
         1,
         "pullup",
@@ -159,24 +182,26 @@ function makeWeek(number: 1 | 2 | 3 | 4 | 5): TrainingWeek {
         number === 5 ? 4 : 2,
       ),
       makePlacement(
+        block,
         number,
         1,
         "row",
         "cable-row",
         4,
         number === 5 ? 100 : 120,
-        number === 5 ? 8 : 10,
+        number === 5 ? 8 : 10 + baselineRepIncrease,
         1,
       ),
     ],
   };
 
   const day2: WorkoutDay = {
-    id: `w${number}-day-2`,
+    id: `b${block}-w${number}-day-2`,
     name: "Lower A",
     order: 2,
     exercises: [
       makePlacement(
+        block,
         number,
         2,
         "squat",
@@ -190,9 +215,26 @@ function makeWeek(number: 1 | 2 | 3 | 4 | 5): TrainingWeek {
   };
 
   return {
-    id: `week-${number}`,
+    id: `block-${block}-week-${number}`,
     number,
     days: [day1, day2],
+  };
+}
+
+function makeBlock(sequence: number): TrainingBlock {
+  const baselineRepIncrease = sequence - 1;
+
+  return {
+    id: `block-${sequence}`,
+    sequence,
+    name: `Block ${sequence}`,
+    weeks: [1, 2, 3, 4, 5].map((week) =>
+      makeWeek(
+        sequence,
+        week as 1 | 2 | 3 | 4 | 5,
+        baselineRepIncrease,
+      ),
+    ),
   };
 }
 
@@ -200,42 +242,49 @@ export const mockProgram: Program = {
   id: "personal-training-program",
   name: "Personal Training Program",
   exerciseDefinitions,
-  blocks: [
+  bodyweightHistory: [
     {
-      id: "block-1",
-      sequence: 1,
-      name: "Block 1",
-      weeks: [1, 2, 3, 4, 5].map((week) =>
-        makeWeek(week as 1 | 2 | 3 | 4 | 5),
-      ),
+      id: "bodyweight-2026-07-01",
+      measuredAt: "2026-07-01T12:00:00.000Z",
+      weight: 185,
+    },
+    {
+      id: "bodyweight-2026-07-15",
+      measuredAt: "2026-07-15T12:00:00.000Z",
+      weight: 183,
     },
   ],
+  blocks: [makeBlock(1), makeBlock(2)],
 };
 
 export const mockResults: SetResultsBySetId = {
-  "w1-d1-bench-s1": {
+  "b1-w1-d1-bench-s1": {
     status: "completed",
     actualWeight: 205,
     actualReps: 4,
     completedAt: "2026-07-01T18:00:00.000Z",
+    bodyweight: 185,
   },
-  "w1-d1-bench-s2": {
+  "b1-w1-d1-bench-s2": {
     status: "completed",
     actualWeight: 205,
     actualReps: 2,
     completedAt: "2026-07-01T18:04:00.000Z",
     note: "Below target after a poor night of sleep.",
+    bodyweight: 185,
   },
-  "w1-d1-fly-s1": {
+  "b1-w1-d1-fly-s1": {
     status: "completed",
     actualWeight: 120,
     actualReps: 9,
     completedAt: "2026-07-01T18:10:00.000Z",
     updatedAt: "2026-07-01T18:12:00.000Z",
+    bodyweight: 185,
   },
-  "w1-d1-fly-s2": {
+  "b1-w1-d1-fly-s2": {
     status: "skipped",
     completedAt: "2026-07-01T18:14:00.000Z",
     note: "Shoulder felt irritated.",
+    bodyweight: 185,
   },
 };
