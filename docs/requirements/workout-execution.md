@@ -6,15 +6,6 @@ Status: Draft
 
 Define the initial requirements for running a workout. These requirements describe the rough product shape and are expected to be refined as the interaction model, training rules, and tests are developed.
 
-## Terminology
-
-- **Exercise**: A movement such as bench press, squat, or pull-up.
-- **Set**: One logged performance of a single exercise.
-- **Circuit**: A grouped sequence of exercises that is performed and logged together.
-- **Workout**: The planned training for one day.
-- **Session**: The user's recorded execution of a workout.
-- **Target**: The prescribed weight, repetitions, and other relevant guidance for a set or circuit.
-
 ## 1. Workout Navigation
 
 ### EXE-NAV-001 — Navigate between exercises
