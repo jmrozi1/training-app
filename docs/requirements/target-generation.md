@@ -195,7 +195,51 @@ The user shall be able to reset an exercise's progression state while preserving
 
 The application shall retain the session, date, target, actual result, and recovery context that established each proven maximum.
 
-## 7. Target Explanation
+## 7. Deload Targets
+
+### TGT-DEL-001 — Deload basis
+
+Deload targets shall be derived from the first-week targets of the current mesocycle rather than from the final or maximum-effort week.
+
+### TGT-DEL-002 — Weighted exercise deload
+
+For a weighted exercise, the default deload target shall reduce effective load by 10 percent and reduce each first-week repetition target by 15 percent.
+
+Repetition targets shall be rounded to the nearest whole repetition.
+
+Generated weights shall conform to the increments supported by the user's configured equipment.
+
+### TGT-DEL-003 — Effective load
+
+When an exercise includes a bodyweight contribution, the 10-percent load reduction shall be calculated from effective total load rather than external resistance alone.
+
+Effective total load shall be calculated from external resistance plus the configured bodyweight contribution for the exercise.
+
+For example, a 200-pound user performing a squat with 200 pounds of external resistance and a 100-percent bodyweight contribution has an effective load of 400 pounds; a 10-percent deload reduces the external resistance by 40 pounds.
+
+### TGT-DEL-004 — Unweighted exercise deload
+
+When load cannot be practically reduced, the default deload target shall reduce each first-week repetition target by 30 percent.
+
+Repetition targets shall be rounded to the nearest whole repetition.
+
+### TGT-DEL-005 — Partial load reduction
+
+When the calculated effective-load reduction cannot be fully achieved through available external-resistance changes, the application shall reduce external resistance as far as practical and may apply additional repetition reduction.
+
+The exact compensation formula may remain approximate.
+
+### TGT-DEL-006 — Deload evidence
+
+Deload performance shall not establish, lower, or otherwise drive proven maximums or future progression targets.
+
+Failure to complete a deload target shall not be treated as evidence of regression.
+
+### TGT-DEL-007 — Practical calculation
+
+Deload calculations may use intentionally simple estimates and configured bodyweight-contribution values because deload performance is not used to establish progression evidence.
+
+## 8. Target Explanation
 
 ### TGT-EXP-001 — Concise explanation
 
@@ -217,17 +261,19 @@ Detailed explanations shall distinguish among:
 
 ### TGT-EXP-004 — Adjustment visibility
 
-When a target differs from its base value because of recovery, replanning, load changes, or mesocycle position, the explanation shall identify the factors that caused the adjustment.
+When a target differs from its base value because of recovery, replanning, load changes, deloading, or mesocycle position, the explanation shall identify the factors that caused the adjustment.
 
-## 8. Open Questions
+## 9. Open Questions
 
 The following details remain intentionally unresolved:
 
 - the exact fatigue model used to project later-set targets;
 - the exact recovery curve and normalization method;
 - the generic formula used after a weight increase;
-- rounding behavior for predicted repetitions;
+- rounding behavior for predicted repetitions outside deload calculations;
 - how user-specific estimates replace generic formulas;
 - how circuits establish and retain maximums;
+- default and per-exercise bodyweight-contribution values;
+- how partial load reductions are compensated with additional rep reductions;
 - whether maximum provenance should retain multiple equivalent records; and
 - the final interaction for editing, removing, or resetting maximums.
