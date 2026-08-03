@@ -69,11 +69,12 @@ Artificial intelligence may eventually help users interpret unusual circumstance
 
 ## Definition of Success
 
-The product succeeds when a user can open the application during a real, imperfect training week and quickly answer four questions:
+The product succeeds when a user can open the application during a real, imperfect training week and quickly answer five questions:
 
 1. What should I do now?
 2. What should I record?
 3. Did this performance represent progress?
 4. What should I attempt next time?
+5. Why is this my target?
 
 The answers should remain useful even when the workout did not happen exactly as planned.
