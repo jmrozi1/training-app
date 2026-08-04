@@ -163,13 +163,11 @@ For example, a 10-pound increase from 45 to 55 pounds shall be treated as more s
 
 After a proposed weight increase, the application shall estimate the expected repetitions for every set.
 
-If any estimated set falls below the configured minimum, the application shall reduce the proposed weight increase until an available load is found that preserves the minimum.
+If any estimated set falls below the configured minimum, the application shall reduce the proposed weight increase using the applicable weight increment until the projected targets preserve the minimum.
 
-### TGT-WGT-007 — Supported load increments
+### TGT-WGT-007 — Round generated weights
 
-Generated weights shall conform to the increments supported by the user's configured equipment.
-
-The application shall not prescribe mathematically ideal but unavailable loads.
+Generated weights shall be rounded using the most specific applicable weight increment: exercise override, plan override, user setting, or application default.
 
 ### TGT-WGT-008 — Initial estimation and later calibration
 
@@ -207,7 +205,7 @@ For a weighted exercise, the default deload target shall reduce effective load b
 
 Repetition targets shall be rounded to the nearest whole repetition.
 
-Generated weights shall conform to the increments supported by the user's configured equipment.
+Generated weights shall be rounded using the applicable configured weight increment.
 
 ### TGT-DEL-003 — Effective load
 
@@ -225,7 +223,7 @@ Repetition targets shall be rounded to the nearest whole repetition.
 
 ### TGT-DEL-005 — Partial load reduction
 
-When the calculated effective-load reduction cannot be fully achieved through available external-resistance changes, the application shall reduce external resistance as far as practical and may apply additional repetition reduction.
+When the calculated effective-load reduction cannot be fully achieved through the applicable weight increment or available external resistance, the application shall reduce external resistance as far as practical and may apply additional repetition reduction.
 
 The exact compensation formula may remain approximate.
 
