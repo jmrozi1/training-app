@@ -40,7 +40,9 @@ When the user returns, targets shall reflect the actual elapsed time since the m
 
 ### EXE-NAV-006 — Abandon a session
 
-The user shall be able to explicitly abandon an in-progress session and discard its recorded session state.
+The user shall be able to explicitly abandon an in-progress session so that the remaining workout is no longer pending.
+
+Abandoning a session shall mark it as missed while preserving all recorded sets, circuits, timing data, and other completed session work.
 
 The application shall not treat ordinary time away from the workout as abandonment.
 
@@ -144,11 +146,18 @@ The user shall be able to request a more detailed explanation of the calculation
 
 ### EXE-TIM-011 — Audio guidance
 
-The application may provide optional nonverbal audio guidance that changes gradually as the preferred starting range approaches.
+The application may provide the discrete optional audio cues defined in user settings for:
+
+- reaching the minimum preferred rest time;
+- reaching the maximum preferred rest time;
+- sixty seconds before the first recovery-adjusted target increase; and
+- fifteen seconds before the first recovery-adjusted target increase.
+
+Each enabled cue shall play at most once during the recovery period following a completed set or circuit.
+
+After the first recovery-adjusted target increase occurs, the application shall not play additional audio cues for later target increases during that recovery period.
 
 Audio guidance shall not require user acknowledgment and shall not imply that missing the preferred range ends or pauses the workout.
-
-The exact audio design remains open for later refinement.
 
 ### EXE-TIM-012 — Display themes
 
@@ -206,6 +215,5 @@ The following details remain intentionally unresolved:
 - how targets for circuits are calculated and adjusted;
 - the exact interaction for preserving versus abandoning a session;
 - whether skipped work requires a reason;
-- the final audio behavior;
 - the final appearance and behavior of grayscale mode; and
 - the rules for saving session replanning changes back into a reusable routine.
